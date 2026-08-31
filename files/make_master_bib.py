@@ -1,4 +1,3 @@
-````python
 #!/usr/bin/env python3
 """
 Create jdc_master.bib from the bibliography files used by jdc_cv.tex.

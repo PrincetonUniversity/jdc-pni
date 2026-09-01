@@ -1,3 +1,4 @@
+````python
 #!/usr/bin/env python3
 """
 Create jdc_master.bib from the bibliography files used by jdc_cv.tex.
@@ -63,7 +64,6 @@ def split_entries(text):
     n = len(text)
 
     while i < n:
-        # Find the next BibTeX entry.
         match = re.search(r"@[A-Za-z]+\s*\{", text[i:])
 
         if not match:
@@ -302,38 +302,55 @@ def main():
         for entry in entries:
             key = get_key(entry)
             normalized = normalize_entry(entry)
-
-            if key in keys:
-                previous_file, previous_entry = keys[key]
-
-                if normalized == previous_entry:
-                    duplicate_count += 1
-                    print(
-                        f"  Duplicate identical entry ignored: {key}"
-                    )
-                    continue
-
-                print()
-                print("ERROR: Conflicting BibTeX key found!")
-                print()
-                print(f"  Key:        {key}")
-                print(f"  First file: {previous_file}")
-                print(f"  Also in:    {filename}")
-                print()
-                print(
-                    "The entries have the same key but different "
-                    "contents."
-                )
-                print()
-
-                sys.exit(1)
-
             keywords = classify_entry(filename, entry)
             entry = add_keywords(entry, keywords)
             entry = add_sortyear(entry)
 
+            if key in keys:
+                previous_file, previous_entry, previous_normalized = keys[key]
+
+                if normalized == previous_normalized:
+                    duplicate_count += 1
+                    print(
+                        f"  Duplicate identical entry merged: {key}"
+                    )
+                else:
+                    duplicate_count += 1
+                    print(
+                        f"  Duplicate entry merged: {key}"
+                    )
+                    print(
+                        f"    Keeping bibliographic data from "
+                        f"{previous_file}"
+                    )
+
+                merged_entry = add_keywords(
+                    previous_entry,
+                    keywords
+                )
+
+                all_entries[
+                    next(
+                        i for i, item in enumerate(all_entries)
+                        if item[1] == key
+                    )
+                ] = (
+                    previous_file,
+                    key,
+                    merged_entry
+                )
+
+                keys[key] = (
+                    previous_file,
+                    merged_entry,
+                    previous_normalized
+                )
+
+                continue
+
             keys[key] = (
                 filename,
+                entry,
                 normalized
             )
 
@@ -382,7 +399,7 @@ def main():
     print("=" * 60)
     print(f"Successfully created: {OUTPUT}")
     print(f"Total entries: {len(all_entries)}")
-    print(f"Duplicate entries ignored: {duplicate_count}")
+    print(f"Duplicate entries merged: {duplicate_count}")
     print("=" * 60)
     print()
 
@@ -401,3 +418,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+````

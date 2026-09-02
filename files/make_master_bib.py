@@ -179,7 +179,7 @@ def add_keywords(entry, new_keywords):
     )
 
     if keyword_match:
-        replacement = f"keywords = {{{keyword_string}}},"
+        replacement = f"  keywords = {{{keyword_string}}},"
 
         return (
             entry[:keyword_match.start()]
@@ -194,10 +194,15 @@ def add_keywords(entry, new_keywords):
             "Could not find closing brace in entry."
         )
 
+    before = entry[:position].rstrip()
+
+    if not before.endswith(","):
+        before += ","
+
     insertion = f"\n  keywords = {{{keyword_string}}},"
 
     return (
-        entry[:position]
+        before
         + insertion
         + "\n"
         + entry[position:]

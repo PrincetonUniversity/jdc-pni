@@ -12,7 +12,39 @@
 
 
 %\usepackage[backend=biber]{biblatex} % Required for loading bibliography, sorting entries
-\usepackage[backend=biber, sorting=ydnt, style=numeric, maxbibnames=99, maxcitenames=3, giveninits=true]{biblatex}
+\usepackage[
+    backend=biber,
+    sorting=ydnt,
+    style=numeric,
+    maxbibnames=99,
+    maxcitenames=3,
+    giveninits=true,
+    defernumbers=true
+]{biblatex}
+
+\addbibresource{jdc_master.bib}
+
+% Publication numbering
+% ------------------------------------------------------------
+% Count entries in each filtered bibliography and reverse the
+% biblatex numbering so that the newest publication receives
+% the highest number, matching the original CV.
+
+\newrobustcmd*{\JDCReverseNumber}[1]{%
+    \number\numexpr\csuse{JDCentrycount:\therefsection}+1-#1\relax
+}
+
+\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{#1}}
+
+\renewbibmacro*{author}{%
+    \printnames{author}%
+    \setunit{\addspace}%
+    \printfield{year}%
+}
+
+\DeclareFieldFormat{year}{\mkbibparens{#1}}
+
+\addbibresource{jdc_master.bib}
 
 % Get rid of "In:" before journal titles in numeric style:
 \renewbibmacro{in:}{%
@@ -50,26 +82,7 @@
 }
 \DeclareFieldFormat{year}{\mkbibparens{#1}}
 
-% Publication tags NEW
-
-\newcommand{\JDCtag}[1]{%
-  \textcolor{gray}{\textsf{\footnotesize [#1]}}%
-}
-
-\newcommand{\JDCPrintTags}{%
-  \ifkeyword{article}{\JDCtag{ARTICLE}\space}{}%
-  \ifkeyword{review}{\JDCtag{REVIEW}\space}{}%
-  \ifkeyword{book}{\JDCtag{BOOK}\space}{}%
-  \ifkeyword{abstract}{\JDCtag{ABSTRACT}\space}{}%
-  \ifkeyword{preprint}{\JDCtag{PREPRINT}\space}{}%
-  \ifkeyword{under-review}{\JDCtag{UNDER REVIEW}\space}{}%
-  \ifkeyword{in-preparation}{\JDCtag{IN PREPARATION}\space}{}%
-}
-
-\renewbibmacro*{begentry}{%
-  \JDCPrintTags
-  \setunit{\addspace}%
-}
+% Publication tags
 
 \setlength\bibitemsep{3pt} % Adjust spacing between bibliography entries
 
@@ -395,14 +408,93 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 
 %%% PUBLICATIONS
 
-    \begin{center}
+\begin{center}
 \section*{PUBLICATIONS} \label{secPUBLICATIONS}
-    \end{center}
+\end{center}
 
-\begin{refsection}[jdc_master.bib]
+
+% 1. Peer-Reviewed Articles
+
+\subsection*{1. Peer-Reviewed Articles}
+\label{secPUBLICATIONS1}
+
+\begin{refsection}
     \nocite{*}
-    \printbibliography[heading=none]
+
+    \printbibliography[
+        heading=none,
+        keyword=article
+    ]
 \end{refsection}
+
+\medskip
+
+
+% 2. Invited Reviews, Commentary, Chapters, Edited Volumes & Technical Reports
+
+\subsection*{2. Invited Reviews, Commentary, Chapters, Edited Volumes \& Technical Reports}
+\label{secPUBLICATIONS2}
+
+\begin{refsection}
+    \nocite{*}
+
+    \printbibliography[
+        heading=none,
+        keyword=review
+    ]
+\end{refsection}
+
+\smallskip
+
+
+% 3. Books
+
+\subsection*{3. Books}
+\label{secPUBLICATIONS3}
+
+\begin{refsection}
+    \nocite{*}
+
+    \printbibliography[
+        heading=none,
+        keyword=book
+    ]
+\end{refsection}
+
+\smallskip
+
+
+% 4. Published Abstracts
+
+\subsection*{4. Published Abstracts}
+\label{secPUBLICATIONS4}
+
+\begin{refsection}
+    \nocite{*}
+
+    \printbibliography[
+        heading=none,
+        keyword=abstract
+    ]
+\end{refsection}
+
+\smallskip
+
+
+% 5. Preprints: Manuscripts Under Review / In Preparation
+
+\subsection*{5. Preprints: Manuscripts Under Review / In Preparation}
+\label{secPUBLICATIONS5}
+
+\begin{refsection}
+    \nocite{*}
+
+    \printbibliography[
+        heading=none,
+        keyword=preprint
+    ]
+\end{refsection}
+
 
 \newpage
 

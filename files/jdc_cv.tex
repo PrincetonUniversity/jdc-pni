@@ -27,38 +27,48 @@
 
 % Publication numbering
 
-\newcounter{articlecount}
-\newcounter{reviewcount}
-\newcounter{bookcount}
-\newcounter{abstractcount}
-\newcounter{preprintcount}
-
+% Count entries in each publication category
 \AtDataInput{%
-  \ifkeyword{article}{\stepcounter{articlecount}}{}%
-  \ifkeyword{review}{\stepcounter{reviewcount}}{}%
-  \ifkeyword{book}{\stepcounter{bookcount}}{}%
-  \ifkeyword{abstract}{\stepcounter{abstractcount}}{}%
-  \ifkeyword{preprint}{\stepcounter{preprintcount}}{}%
+  \ifkeyword{article}{%
+    \csnumgdef{articlecount}{%
+      \csuse{articlecount}+1}%
+  }{}%
+  \ifkeyword{review}{%
+    \csnumgdef{reviewcount}{%
+      \csuse{reviewcount}+1}%
+  }{}%
+  \ifkeyword{book}{%
+    \csnumgdef{bookcount}{%
+      \csuse{bookcount}+1}%
+  }{}%
+  \ifkeyword{abstract}{%
+    \csnumgdef{abstractcount}{%
+      \csuse{abstractcount}+1}%
+  }{}%
+  \ifkeyword{preprint}{%
+    \csnumgdef{preprintcount}{%
+      \csuse{preprintcount}+1}%
+  }{}%
 }
 
-\newcommand{\JDCReverseNumber}[2]{%
-  \number\numexpr\value{#1}+1-#2\relax
-}
-
-\newcommand{\JDCSetNumbering}[1]{%
-  \ifstrequal{#1}{article}
-    {\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{articlecount}{##1}}}
-    {\ifstrequal{#1}{review}
-      {\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{reviewcount}{##1}}}
-      {\ifstrequal{#1}{book}
-        {\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{bookcount}{##1}}}
-        {\ifstrequal{#1}{abstract}
-          {\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{abstractcount}{##1}}}
-          {\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{preprintcount}{##1}}}
+% Reverse the numbering within each publication category
+\DeclareFieldFormat{labelnumber}{%
+  \ifkeyword{article}
+    {\number\numexpr\csuse{articlecount}+1-#1\relax}
+    {\ifkeyword{review}
+      {\number\numexpr\csuse{reviewcount}+1-#1\relax}
+      {\ifkeyword{book}
+        {\number\numexpr\csuse{bookcount}+1-#1\relax}
+        {\ifkeyword{abstract}
+          {\number\numexpr\csuse{abstractcount}+1-#1\relax}
+          {\number\numexpr\csuse{preprintcount}+1-#1\relax}
         }
       }
     }
 }
+
+
+% Author and year formatting
 
 \renewbibmacro*{author}{%
   \printnames{author}%
@@ -67,7 +77,6 @@
 }
 
 \DeclareFieldFormat{year}{\mkbibparens{#1}}
-
 
 % Publication tags
 
@@ -423,6 +432,7 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
     \printbibliography[
         heading=none,
         keyword=article
+        resetnumbers=true
     ]
 \end{refsection}
 
@@ -442,6 +452,7 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
     \printbibliography[
         heading=none,
         keyword=review
+        resetnumbers=true
     ]
 \end{refsection}
 
@@ -461,6 +472,7 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
     \printbibliography[
         heading=none,
         keyword=book
+        resetnumbers=true
     ]
 \end{refsection}
 
@@ -480,6 +492,7 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
     \printbibliography[
         heading=none,
         keyword=abstract
+        resetnumbers=true
     ]
 \end{refsection}
 
@@ -499,6 +512,7 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
     \printbibliography[
         heading=none,
         keyword=preprint
+        resetnumbers=true
     ]
 \end{refsection}
 

@@ -22,65 +22,52 @@
     defernumbers=true
 ]{biblatex}
 
+%load bibliography resources (only from master bib)
 \addbibresource{jdc_master.bib}
 
 % Publication numbering
-% ------------------------------------------------------------
-% Count entries in each filtered bibliography and reverse the
-% biblatex numbering so that the newest publication receives
-% the highest number, matching the original CV.
 
-\newrobustcmd*{\JDCReverseNumber}[1]{%
-    \number\numexpr\csuse{JDCentrycount:\therefsection}+1-#1\relax
-}
+\newcounter{articlecount}
+\newcounter{reviewcount}
+\newcounter{bookcount}
+\newcounter{abstractcount}
+\newcounter{preprintcount}
 
-\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{#1}}
-
-\renewbibmacro*{author}{%
-    \printnames{author}%
-    \setunit{\addspace}%
-    \printfield{year}%
-}
-
-\DeclareFieldFormat{year}{\mkbibparens{#1}}
-
-\addbibresource{jdc_master.bib}
-
-% Get rid of "In:" before journal titles in numeric style:
-\renewbibmacro{in:}{%
-  \ifentrytype{article}{}%
-  {\printtext{\bibstring{in}\intitlepunct}}%
-}
-
-% Get rid of quotes around article titles in numeric style:
-\DeclareFieldFormat[article,inbook,incollection,inproceedings,patent,thesis,unpublished]{title}{#1}
-\DeclareFieldFormat[article,inbook,incollection,inproceedings,patent,thesis,unpublished]{citetitle}{#1}
-
-% Get rid of year after issue in numeric style:
-\renewbibmacro*{issue+date}
-    {\iffieldundef{issue} {} {\printfield{issue}\setunit*{\addspace}}}
-
-% ATTEMPT AT NUMBER CITES WITH APA BIB STYLE:
-%\usepackage[backend=biber, sorting=ydnt, citestyle=numeric, bibstyle=apa, maxbibnames=99, maxcitenames=3, ]{biblatex}
-%\DeclareFieldFormat{labelnumberwidth}{\\mkbibbrackets{#1}}
-%\DeclareFieldFormat{shorthandwidth}{\\mkbibbrackets{#1}}
-
-% Count total number of entries in each reference section
-% (Uses macros provided by biblatex/etoolbox)
 \AtDataInput{%
-  \csnumgdef{entrycount:\therefsection}{\csuse{entrycount:\therefsection}+1}}
+  \ifkeyword{article}{\stepcounter{articlecount}}{}%
+  \ifkeyword{review}{\stepcounter{reviewcount}}{}%
+  \ifkeyword{book}{\stepcounter{bookcount}}{}%
+  \ifkeyword{abstract}{\stepcounter{abstractcount}}{}%
+  \ifkeyword{preprint}{\stepcounter{preprintcount}}{}%
+}
 
-% Print labelnumber as: total_in_refsection + 1 - actual_labelnumber
-\DeclareFieldFormat{labelnumber}{\mkbibdesc{#1}}
-\newrobustcmd*{\mkbibdesc}[1]{%
-  \number\numexpr\csuse{entrycount:\therefsection}+1-#1\relax}
+\newcommand{\JDCReverseNumber}[2]{%
+  \number\numexpr\value{#1}+1-#2\relax
+}
+
+\newcommand{\JDCSetNumbering}[1]{%
+  \ifstrequal{#1}{article}
+    {\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{articlecount}{##1}}}
+    {\ifstrequal{#1}{review}
+      {\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{reviewcount}{##1}}}
+      {\ifstrequal{#1}{book}
+        {\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{bookcount}{##1}}}
+        {\ifstrequal{#1}{abstract}
+          {\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{abstractcount}{##1}}}
+          {\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{preprintcount}{##1}}}
+        }
+      }
+    }
+}
 
 \renewbibmacro*{author}{%
   \printnames{author}%
   \setunit{\addspace}%
   \printfield{year}%
 }
+
 \DeclareFieldFormat{year}{\mkbibparens{#1}}
+
 
 % Publication tags
 
@@ -91,8 +78,6 @@
 %\bibliography{jdc_refs}
 %\bibliographystyle{biblatex} % Use the BibTex style for formatting the bibliography
 
-% Load bibliography resources (CHANGED TO JUST THE MASTER BIBLIOGRAPHY
-\addbibresource{jdc_master.bib}
 
 % Hyperlink globals
 \hypersetup{colorlinks=true, %colors hyperlinks, disables border
@@ -156,7 +141,19 @@
 \hyperref[secHaA]{HONORS and AWARDS}
     \medskip
 
-\hyperref[secPUBLICATIONS]{PUBLICATIONS} %CHANGED
+\hyperref[secPUBLICATIONS]{PUBLICATIONS}
+    \medskip
+
+\hyperref[secPUBLICATIONS1]{\hspace{0.4in} 1. Peer-Reviewed Articles}
+
+\hyperref[secPUBLICATIONS2]{\hspace{0.4in} 2. Invited Reviews, Commentary, Chapters, Edited Volumes \& Technical Reports}
+
+\hyperref[secPUBLICATIONS3]{\hspace{0.4in} 3. Books}
+
+\hyperref[secPUBLICATIONS4]{\hspace{0.4in} 4. Published Abstracts}
+
+\hyperref[secPUBLICATIONS5]{\hspace{0.4in} 5. Preprints: Manuscripts Under Review / In Preparation}
+    \medskip
 
 \hyperref[secTEACHING]{TEACHING}
 
@@ -421,6 +418,8 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 \begin{refsection}
     \nocite{*}
 
+    \JDCSetNumbering{article}
+
     \printbibliography[
         heading=none,
         keyword=article
@@ -437,6 +436,8 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 
 \begin{refsection}
     \nocite{*}
+
+    \JDCSetNumbering{review}
 
     \printbibliography[
         heading=none,
@@ -455,6 +456,8 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 \begin{refsection}
     \nocite{*}
 
+    \JDCSetNumbering{book}
+
     \printbibliography[
         heading=none,
         keyword=book
@@ -472,6 +475,8 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 \begin{refsection}
     \nocite{*}
 
+    \JDCSetNumbering{abstract}
+
     \printbibliography[
         heading=none,
         keyword=abstract
@@ -488,6 +493,8 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 
 \begin{refsection}
     \nocite{*}
+
+    \JDCSetNumbering{preprint}
 
     \printbibliography[
         heading=none,

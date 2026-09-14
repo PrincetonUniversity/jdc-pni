@@ -22,53 +22,13 @@
     defernumbers=true
 ]{biblatex}
 
-%load bibliography resources (only from master bib)
 \addbibresource{jdc_master.bib}
 
 % Publication numbering
 
-% Count entries in each publication category
-\AtDataInput{%
-  \ifkeyword{article}{%
-    \csnumgdef{articlecount}{%
-      \csuse{articlecount}+1}%
-  }{}%
-  \ifkeyword{review}{%
-    \csnumgdef{reviewcount}{%
-      \csuse{reviewcount}+1}%
-  }{}%
-  \ifkeyword{book}{%
-    \csnumgdef{bookcount}{%
-      \csuse{bookcount}+1}%
-  }{}%
-  \ifkeyword{abstract}{%
-    \csnumgdef{abstractcount}{%
-      \csuse{abstractcount}+1}%
-  }{}%
-  \ifkeyword{preprint}{%
-    \csnumgdef{preprintcount}{%
-      \csuse{preprintcount}+1}%
-  }{}%
-}
-
-% Reverse the numbering within each publication category
 \DeclareFieldFormat{labelnumber}{%
-  \ifkeyword{article}
-    {\number\numexpr\csuse{articlecount}+1-#1\relax}
-    {\ifkeyword{review}
-      {\number\numexpr\csuse{reviewcount}+1-#1\relax}
-      {\ifkeyword{book}
-        {\number\numexpr\csuse{bookcount}+1-#1\relax}
-        {\ifkeyword{abstract}
-          {\number\numexpr\csuse{abstractcount}+1-#1\relax}
-          {\number\numexpr\csuse{preprintcount}+1-#1\relax}
-        }
-      }
-    }
+  \number\numexpr\value{listtotal}+1-#1\relax
 }
-
-
-% Author and year formatting
 
 \renewbibmacro*{author}{%
   \printnames{author}%
@@ -78,9 +38,8 @@
 
 \DeclareFieldFormat{year}{\mkbibparens{#1}}
 
-% Publication tags
+\setlength\bibitemsep{3pt}
 
-\setlength\bibitemsep{3pt} % Adjust spacing between bibliography entries
 
 % Required for loading bibliography, sortingentries
 % Load bibliography

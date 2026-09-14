@@ -27,7 +27,21 @@
 % Publication numbering
 
 \DeclareFieldFormat{labelnumber}{%
-  \number\numexpr\value{listtotal}+1-#1\relax
+  \ifkeyword{article}
+    {\number\numexpr300+1-#1\relax}
+    {\ifkeyword{review}
+      {\number\numexpr63+1-#1\relax}
+      {\ifkeyword{book}
+        {\number\numexpr5+1-#1\relax}
+        {\ifkeyword{abstract}
+          {\number\numexpr177+1-#1\relax}
+          {\ifkeyword{preprint}
+            {\number\numexpr20+1-#1\relax}
+            {#1}%
+          }%
+        }%
+      }%
+    }%
 }
 
 \renewbibmacro*{author}{%

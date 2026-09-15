@@ -26,22 +26,37 @@
 
 % Publication numbering
 
-\DeclareFieldFormat{labelnumber}{%
-  \ifkeyword{article}
-    {\number\numexpr300+1-#1\relax}
-    {\ifkeyword{review}
-      {\number\numexpr63+1-#1\relax}
-      {\ifkeyword{book}
-        {\number\numexpr5+1-#1\relax}
-        {\ifkeyword{abstract}
-          {\number\numexpr177+1-#1\relax}
-          {\ifkeyword{preprint}
-            {\number\numexpr20+1-#1\relax}
-            {#1}%
-          }%
-        }%
-      }%
-    }%
+\newcounter{articlecount}
+\newcounter{reviewcount}
+\newcounter{bookcount}
+\newcounter{abstractcount}
+\newcounter{preprintcount}
+
+\AtDataInput{%
+  \ifkeyword{article}{\stepcounter{articlecount}}{}%
+  \ifkeyword{review}{\stepcounter{reviewcount}}{}%
+  \ifkeyword{book}{\stepcounter{bookcount}}{}%
+  \ifkeyword{abstract}{\stepcounter{abstractcount}}{}%
+  \ifkeyword{preprint}{\stepcounter{preprintcount}}{}%
+}
+
+\newcommand{\JDCReverseNumber}[2]{%
+  \number\numexpr\value{#1}+1-#2\relax
+}
+
+\newcommand{\JDCSetNumbering}[1]{%
+  \ifstrequal{#1}{article}
+    {\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{articlecount}{##1}}}
+    {\ifstrequal{#1}{review}
+      {\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{reviewcount}{##1}}}
+      {\ifstrequal{#1}{book}
+        {\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{bookcount}{##1}}}
+        {\ifstrequal{#1}{abstract}
+          {\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{abstractcount}{##1}}}
+          {\DeclareFieldFormat{labelnumber}{\JDCReverseNumber{preprintcount}{##1}}}
+        }
+      }
+    }
 }
 
 \renewbibmacro*{author}{%
@@ -400,6 +415,8 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 \begin{refsection}
     \nocite{*}
 
+    \JDCSetNumbering{article}
+
     \printbibliography[
         heading=none,
         keyword=article,
@@ -417,6 +434,8 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 
 \begin{refsection}
     \nocite{*}
+
+    \JDCSetNumbering{review}
 
     \printbibliography[
         heading=none,
@@ -436,6 +455,8 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 \begin{refsection}
     \nocite{*}
 
+    \JDCSetNumbering{book}
+
     \printbibliography[
         heading=none,
         keyword=book,
@@ -454,6 +475,8 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 \begin{refsection}
     \nocite{*}
 
+    \JDCSetNumbering{abstract}
+
     \printbibliography[
         heading=none,
         keyword=abstract,
@@ -471,6 +494,8 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 
 \begin{refsection}
     \nocite{*}
+
+    \JDCSetNumbering{preprint}
 
     \printbibliography[
         heading=none,

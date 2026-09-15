@@ -26,21 +26,22 @@
 
 % Publication numbering
 
+% Publication numbering
+
 \makeatletter
 
 \defbibenvironment{jdcounter}
   {\renewcommand{\blx@driver}[1]{}}
   {}
-  {\csnumgdef{jdcsectioncount:\therefsection}{%
-      \csuse{jdcsectioncount:\therefsection}+1}}
+  {\csnumgdef{jdcsectioncount}{%
+      \csuse{jdcsectioncount}+1}}
 
 \makeatother
 
 \DeclareFieldFormat{labelnumber}{%
   \number\numexpr
-    \csuse{jdcsectioncount:\therefsection}+1-#1
-  \relax
-}
+    \csuse{jdcsectioncount}+1-#1
+  \relax}
 
 \renewbibmacro*{author}{%
   \printnames{author}%
@@ -398,7 +399,8 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 \begin{refsection}
     \nocite{*}
 
-    \csnumgdef{jdcsectioncount:\therefsection}{0}
+    \csnumgdef{jdcsectioncount}{0}
+
     \printbibliography[
         heading=none,
         env=jdcounter,
@@ -423,11 +425,12 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 \begin{refsection}
     \nocite{*}
 
-    \csnumgdef{jdcsectioncount:\therefsection}{0}
+    \csnumgdef{jdcsectioncount}{0}
+
     \printbibliography[
         heading=none,
         env=jdcounter,
-        keyword=article
+        keyword=review
     ]
 
     \printbibliography[
@@ -448,11 +451,12 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 \begin{refsection}
     \nocite{*}
 
-    \csnumgdef{jdcsectioncount:\therefsection}{0}
+    \csnumgdef{jdcsectioncount}{0}
+
     \printbibliography[
         heading=none,
         env=jdcounter,
-        keyword=article
+        keyword=book
     ]
 
     \printbibliography[
@@ -473,11 +477,12 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 \begin{refsection}
     \nocite{*}
 
-    \csnumgdef{jdcsectioncount:\therefsection}{0}
+    \csnumgdef{jdcsectioncount}{0}
+
     \printbibliography[
         heading=none,
         env=jdcounter,
-        keyword=article
+        keyword=abstract
     ]
 
     \printbibliography[
@@ -498,11 +503,12 @@ Fellow, Society of Experimental Psychologists \hspace{2.78in} 2025
 \begin{refsection}
     \nocite{*}
 
-    \csnumgdef{jdcsectioncount:\therefsection}{0}
+    \csnumgdef{jdcsectioncount}{0}
+
     \printbibliography[
         heading=none,
         env=jdcounter,
-        keyword=article
+        keyword=preprint
     ]
     
     \printbibliography[

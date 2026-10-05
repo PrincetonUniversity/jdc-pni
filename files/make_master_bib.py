@@ -6,15 +6,9 @@ The source bibliography files are not modified.
 """
 
 from pathlib import Path
-from urllib.request import urlopen
 import re
 import sys
 
-
-BASE_URL = (
-    "https://raw.githubusercontent.com/"
-    "PrincetonUniversity/jdc-pni/main/files/"
-)
 
 FILES = [
     ("jdc_refs.bib", ["article"]),
@@ -27,14 +21,11 @@ FILES = [
 OUTPUT = Path("jdc_master.bib")
 
 
-def download_file(filename):
-    """Download a bibliography file from GitHub."""
-    url = BASE_URL + filename
+def read_file(filename):
+    """Read a local bibliography file."""
+    print(f"Reading {filename} ...")
 
-    print(f"Downloading {filename} ...")
-
-    with urlopen(url) as response:
-        return response.read().decode("utf-8")
+    return Path(filename).read_text(encoding="utf-8")
 
 
 def remove_markdown_fences(text):
@@ -274,6 +265,36 @@ def classify_entry(filename, entry):
     )
 
 
+def strip_entry_comments(entry):
+    """Remove % comments between fields (not inside field values)."""
+    out = []
+    depth = 0
+    i = 0
+    n = len(entry)
+
+    while i < n:
+        char = entry[i]
+
+        if char == "\\" and i + 1 < n:
+            out.append(entry[i:i + 2])
+            i += 2
+            continue
+
+        if char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+        elif char == "%" and depth == 1:
+            newline = entry.find("\n", i)
+            i = n if newline == -1 else newline
+            continue
+
+        out.append(char)
+        i += 1
+
+    return "".join(out)
+
+
 def normalize_entry(entry):
     """Normalize whitespace for duplicate checking."""
     return re.sub(
@@ -295,9 +316,12 @@ def main():
 
     # Read each source bibliography.
     for filename, _ in FILES:
-        text = download_file(filename)
+        text = read_file(filename)
         text = remove_markdown_fences(text)
-        entries = split_entries(text)
+        entries = [
+            strip_entry_comments(entry)
+            for entry in split_entries(text)
+        ]
 
         print(
             f"  Found {len(entries):4d} entries in {filename}"

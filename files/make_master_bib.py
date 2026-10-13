@@ -18,14 +18,18 @@ FILES = [
     ("jdc-under-review-in-prep.bib", ["preprint"]),
 ]
 
-OUTPUT = Path("jdc_master.bib")
+# Resolve paths relative to this script so it works no matter which
+# directory it is run from (e.g. PyCharm, a terminal, or build.sh).
+HERE = Path(__file__).resolve().parent
+
+OUTPUT = HERE / "jdc_master.bib"
 
 
 def read_file(filename):
     """Read a local bibliography file."""
     print(f"Reading {filename} ...")
 
-    return Path(filename).read_text(encoding="utf-8")
+    return (HERE / filename).read_text(encoding="utf-8")
 
 
 def remove_markdown_fences(text):
@@ -201,13 +205,22 @@ def add_keywords(entry, new_keywords):
 
 
 def add_sortyear(entry):
-    """Add a numeric sortyear for chronological sorting."""
+    """Add a numeric sortyear for chronological sorting.
+    Non-numeric years sort as newest (sorting=ydnt is newest first):
+    in press, then under review, then in preparation.
+    """
     year = get_year_value(entry)
 
     match = re.search(r"\b(19|20)\d{2}\b", year)
 
     if match:
         sortyear = match.group(0)
+    elif "in press" in year:
+        sortyear = "9999"
+    elif "under review" in year:
+        sortyear = "9998"
+    elif "in prep" in year:
+        sortyear = "9997"
     else:
         sortyear = "0000"
 

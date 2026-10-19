@@ -24,11 +24,8 @@
 
 \addbibresource{jdc_master.bib}
 
-% Get rid of "In:" before journal titles in numeric style:
-\renewbibmacro{in:}{%
-  \ifentrytype{article}{}%
-  {\printtext{\bibstring{in}\intitlepunct}}%
-}
+% Get rid of "In:" for every entry type:
+\renewbibmacro{in:}{}
 
 % Get rid of quotes around article titles in numeric style:
 \DeclareFieldFormat[article,inbook,incollection,inproceedings,patent,thesis,unpublished]{title}{#1}
@@ -91,6 +88,28 @@
 \DeclareFieldFormat{year}{\mkbibparens{#1}}
 
 \setlength\bibitemsep{3pt}
+
+
+% Entry layout: bracketed number, then text; wrapped lines return to the
+% left margin under the number (matches the main-branch PDF).
+% To indent wrapped lines a little, increase \leftmargin (e.g. 1.5em).
+\defbibenvironment{bibliography}
+  {\list
+     {\printtext[labelnumberwidth]{%
+        \printfield{labelprefix}%
+        \printfield{labelnumber}}}
+     {\setlength{\labelwidth}{0pt}%
+      \setlength{\labelsep}{0.4em}%
+      \setlength{\leftmargin}{0pt}%
+      \setlength{\itemindent}{\labelsep}%
+      \setlength{\itemsep}{\bibitemsep}%
+      \setlength{\parsep}{\bibparsep}%
+      \renewcommand*{\makelabel}[1]{##1}}}
+  {\endlist}
+  {\item}
+
+% Diagnostic: search jdc_cv.log for this line to confirm this file was used
+\typeout{*** JDC FORMAT OVERRIDES LOADED ***}
 
 
 % Required for loading bibliography, sortingentries

@@ -40,15 +40,8 @@ if ! biber --version >/dev/null 2>&1; then
     fi
 fi
 
-# 1. Generate the master bibliography (any Python 3.6+ works; no packages needed)
-if command -v python3 >/dev/null 2>&1; then
-    PYTHON=python3
-else
-    PYTHON=python
-fi
-"$PYTHON" make_master_bib.py
 
-# 2. Compile. -interaction=nonstopmode keeps pdflatex from stopping to wait for
+#Compile -interaction=nonstopmode keeps pdflatex from stopping to wait for
 #    input on an error (the cause of builds that hang or silently do nothing).
 pdflatex -interaction=nonstopmode jdc_cv >jdc_cv.pdflatex.out 2>&1 || {
     echo "pdflatex failed -- see jdc_cv.log"
@@ -66,7 +59,7 @@ if grep -q '^!' jdc_cv.log; then
 fi
 echo "Built jdc_cv.pdf"
 
-# 3. Open the PDF
+#Open the PDF
 if [ "$1" != "--no-open" ]; then
     if command -v open >/dev/null 2>&1; then
         open jdc_cv.pdf            # macOS

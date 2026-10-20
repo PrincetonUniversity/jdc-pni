@@ -99,9 +99,10 @@
         \printfield{labelprefix}%
         \printfield{labelnumber}}}
      {\setlength{\labelwidth}{0pt}%
-      \setlength{\labelsep}{0.4em}%
-      \setlength{\leftmargin}{0pt}%
+            \setlength{\labelsep}{10pt}%
+      \setlength{\leftmargin}{20.5pt}%
       \setlength{\itemindent}{\labelsep}%
+      \addtolength{\itemindent}{-\leftmargin}%
       \setlength{\itemsep}{\bibitemsep}%
       \setlength{\parsep}{\bibparsep}%
       \renewcommand*{\makelabel}[1]{##1}}}

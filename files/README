@@ -1,6 +1,6 @@
 # Updating the CV Bibliography
 
-All publications are stored in `jdc_master.bib`. Add new entries directly to this file. **Do not run `make_master_bib.py` or edit the old source bibliography files.**
+All publications are stored in `jdc_master.bib`. Add new entries directly to this file.
 
 ## Choosing a tag
 
@@ -37,5 +37,3 @@ After editing and saving `jdc_master.bib`, run the build script from the reposit
 ```bash
 ./files/build.sh
 ```
-
-The script compiles the CV and updates `files/jdc_cv.pdf`. No separate bibliography-generation step is needed.

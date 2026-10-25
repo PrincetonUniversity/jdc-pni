@@ -24,24 +24,60 @@
 
 \addbibresource{jdc_master.bib}
 
-% Publication numbering
+% Get rid of "In:" for every entry type:
+\renewbibmacro{in:}{}
+
+% Get rid of quotes around article titles in numeric style:
+\DeclareFieldFormat[article,inbook,incollection,inproceedings,patent,thesis,unpublished]{title}{#1}
+\DeclareFieldFormat[article,inbook,incollection,inproceedings,patent,thesis,unpublished]{citetitle}{#1}
+
+% Get rid of year after issue in numeric style:
+\renewbibmacro*{issue+date}
+    {\iffieldundef{issue} {} {\printfield{issue}\setunit*{\addspace}}}
 
 % Publication numbering
 
 \makeatletter
 
+% True only while a publication list is actually being printed
+\newtoggle{jdcrecord}
+\AtBeginBibliography{\toggletrue{jdcrecord}}
+
 \defbibenvironment{jdcounter}
-  {\renewcommand{\blx@driver}[1]{}}
-  {}
+  {\togglefalse{jdcrecord}%
+   \renewcommand{\blx@driver}[1]{}}
+   {}
   {\csnumgdef{jdcsectioncount}{%
       \csuse{jdcsectioncount}+1}}
 
-\makeatother
+% Number each publication list in descending order (newest = highest)
+\newcommand*{\jdc@displaynum}[1]{%
+  \number\numexpr\csuse{jdcsectioncount}+1-#1\relax}
+
+% When an entry is printed in a publication list, record its number in
+% the .aux file so that \cite in the text can show (and link to) it.
 
 \DeclareFieldFormat{labelnumber}{%
-  \number\numexpr
-    \csuse{jdcsectioncount}+1-#1
-  \relax}
+    \jdc@displaynum{#1}%
+  \iftoggle{jdcrecord}{%
+    \immediate\write\@auxout{%
+      \string\jdcsetnum{\thefield{entrykey}}%
+        {\jdc@displaynum{#1}}{\the\c@refsection}}}{}}
+
+% The first list an entry appears in (e.g. Peer-Reviewed Articles) wins;
+% within that list the last value written is the final one
+\newcommand*{\jdcsetnum}[3]{%
+  \ifcsdef{jdc@sec@#1}{}{\csgdef{jdc@sec@#1}{#3}}%
+  \ifnumequal{\csuse{jdc@sec@#1}}{#3}{\csgdef{jdc@num@#1}{#2}}{}}
+
+% In-text citations: show the entry's number in the publication list
+\renewbibmacro*{cite}{%
+  \ifcsdef{jdc@num@\thefield{entrykey}}
+    {\hyperlink{cite.\csuse{jdc@sec@\thefield{entrykey}}@\thefield{entrykey}}%
+       {\csuse{jdc@num@\thefield{entrykey}}}}
+    {\textbf{?}}}
+
+\makeatother
 
 \renewbibmacro*{author}{%
   \printnames{author}%
@@ -52,6 +88,29 @@
 \DeclareFieldFormat{year}{\mkbibparens{#1}}
 
 \setlength\bibitemsep{3pt}
+
+
+% Entry layout: bracketed number, then text; wrapped lines return to the
+% left margin under the number (matches the main-branch PDF).
+% To indent wrapped lines a little, increase \leftmargin (e.g. 1.5em).
+\defbibenvironment{bibliography}
+  {\list
+     {\printtext[labelnumberwidth]{%
+        \printfield{labelprefix}%
+        \printfield{labelnumber}}}
+     {\setlength{\labelwidth}{0pt}%
+            \setlength{\labelsep}{10pt}%
+      \setlength{\leftmargin}{20.5pt}%
+      \setlength{\itemindent}{\labelsep}%
+      \addtolength{\itemindent}{-\leftmargin}%
+      \setlength{\itemsep}{\bibitemsep}%
+      \setlength{\parsep}{\bibparsep}%
+      \renewcommand*{\makelabel}[1]{##1}}}
+  {\endlist}
+  {\item}
+
+% Diagnostic: search jdc_cv.log for this line to confirm this file was used
+\typeout{*** JDC FORMAT OVERRIDES LOADED ***}
 
 
 % Required for loading bibliography, sortingentries

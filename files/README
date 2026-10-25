@@ -1,0 +1,39 @@
+# Updating the CV Bibliography
+
+All publications are stored in `jdc_master.bib`. Add new entries directly to this file.
+
+## Choosing a tag
+
+Add a `keywords` field to each entry to determine which section it appears in:
+
+| Keyword | CV section |
+|---|---|
+| `article` | Peer-Reviewed Articles |
+| `review` | Invited Reviews, Commentary, Chapters, Edited Volumes & Technical Reports |
+| `book` | Books |
+| `abstract` | Published Abstracts |
+| `preprint` | Preprints: Manuscripts Under Review / In Preparation |
+
+For example:
+
+```bibtex
+@article{smith2026example,
+  author   = {Smith, Jane and Cohen, Jonathan D},
+  title    = {Example Publication},
+  journal  = {Example Journal},
+  year     = {2026},
+  keywords = {article}
+}
+```
+
+Use the appropriate keyword for the section where you want the publication to appear. To list an entry in more than one section, use multiple keywords, separated by commas (for example, `keywords = {abstract, review}`).
+
+Keep each citation key unique.
+
+## Building the CV
+
+After editing and saving `jdc_master.bib`, run the build script from the repository root:
+
+```bash
+./files/build.sh
+```

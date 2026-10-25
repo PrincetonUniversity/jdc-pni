@@ -1,0 +1,12 @@
+# LaTeX build by-products, ignore these temporary auxillary files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+jdc_cv.pdflatex.out

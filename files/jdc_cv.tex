@@ -22,6 +22,25 @@
     defernumbers=true
 ]{biblatex}
 
+%sort "in press" entries first
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map[overwrite]{
+      \step[fieldset=presort, fieldvalue={mm}]
+      \step[fieldset=sortyear, null]
+    }
+    \map[overwrite]{
+      \step[
+        fieldsource=year,
+        match=\regexp{(?i)^\s*in\s+press\s*$},
+        final
+      ]
+      \step[fieldset=presort, fieldvalue={aa}]
+      \step[fieldset=sortyear, fieldvalue={9999}]
+    }
+  }
+}
+
 \addbibresource{jdc_master.bib}
 
 % Get rid of "In:" for every entry type:

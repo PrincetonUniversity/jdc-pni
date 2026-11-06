@@ -26,7 +26,7 @@ For example:
 }
 ```
 
-Use the appropriate keyword for the section where you want the publication to appear. To list an entry in more than one section, use multiple keywords, separated by commas (for example, `keywords = {abstract, review}`).
+Use the appropriate keyword for the section where you want the publication to appear.
 
 Keep each citation key unique.
 
